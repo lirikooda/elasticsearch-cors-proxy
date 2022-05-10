@@ -12,12 +12,13 @@ services:
         ipv4_address: 172.20.0.6
 
   port-forward:
-    image: "bitnami/kubectl"
+    image: "claranet/gcloud-kubectl-docker" # can replace with "bitnami/kubectl" for general purpose kubectl, auth token refresh might be needed outside docker
     volumes:
       - ~/.kube/config:/.kube/config
     ports:
       - "9200:9200"
-    command: port-forward -n elasticsearch svc/elasticsearch-master 9200 --address localhost,172.20.0.5
+    entrypoint: kubectl
+    command: --kubeconfig /.kube/config port-forward -n elasticsearch svc/elasticsearch-master 9200 --address localhost,172.20.0.5
     networks:
       es-net:
         ipv4_address: 172.20.0.5
